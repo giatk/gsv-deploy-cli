@@ -1,0 +1,10 @@
+{
+    "sourceCode": {
+        "commonFrontend": "../demo-build-gsv",
+        "sharedComponents": "../own-npm-lib"
+    },
+    "branchForDeploy": {
+        "commonFrontend": "",
+        "sharedComponents": "feature/for-deploy-sp-1" 
+    }
+}

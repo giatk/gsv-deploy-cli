@@ -1,10 +1,16 @@
 export interface AppSettings {
-  sourceCode: {
-    commonFrontend: string;
-    sharedComponents: string;
-  };
   branchForDeploy: {
     commonFrontend: string;
     sharedComponents: string;
+  };
+  githubAccessToken: string;
+  githubOwner: string;
+  commonFrontend: {
+    sourceCode: string;
+  };
+  sharedComponents: {
+    sourceCode: string;
+    workflowPublishNpm: string;
+    repository: string;
   };
 }

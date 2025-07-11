@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "dev": "yarn build && node ./dist/src/publish-shared-components.js"
+    "start": "node ./dist/index.js",
+    "dev": "yarn build && yarn start"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +14,8 @@
   "devDependencies": {
     "@types/node": "^24.0.12",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "axios": "^1.10.0"
   }
 }

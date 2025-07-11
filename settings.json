@@ -1,10 +1,16 @@
 {
-    "sourceCode": {
-        "commonFrontend": "../demo-build-gsv",
-        "sharedComponents": "../own-npm-lib"
-    },
     "branchForDeploy": {
-        "commonFrontend": "",
+        "commonFrontend": "feature/for-deploy-sp-50",
         "sharedComponents": "feature/for-deploy-sp-1" 
+    },
+    "githubAccessToken": "<your access_token>",
+    "githubOwner": "giatk",
+    "commonFrontend": {
+        "sourceCode": "../demo-build-gsv"
+    },
+    "sharedComponents": {
+        "sourceCode": "../own-npm-lib",
+        "workflowPublishNpm": "npm-publish.yml",
+        "repository": "own-npm-lib"
     }
 }

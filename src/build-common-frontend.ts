@@ -3,23 +3,21 @@ import { loadSettings, sleepAsync } from "./utilities";
 import { useSharedComponents } from "./publish-shared-components";
 import { execSync } from "child_process";
 import { GitWorkflowRun } from "./models";
+import { GitPullRequest } from "./models/git-pull-request.model";
+import { GitHubService } from "./github.service";
 
 const useCommonFrontend = () => {
+  const githubService = new GitHubService();
   const setting = loadSettings();
   const { getLatestTagVersion, getSharedComponentsName } =
     useSharedComponents();
 
   const getSharedComponentWorkflowRunAsync = async () => {
-    const url = `https://api.github.com/repos/${setting.githubOwner}/${setting.sharedComponents.repository}/actions/workflows/${setting.sharedComponents.workflowPublishNpm}/runs`;
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `bearer ${setting.githubAccessToken}`,
-        Accept: `application/vnd.github+json`,
-      },
+    const workflowRuns = await githubService.getWorkflowRunsAsync({
+      repository: setting.sharedComponents.repository,
+      workflowId: setting.sharedComponents.workflowPublishNpm,
     });
-
     const latestVersion = getLatestTagVersion();
-    const workflowRuns = response.data.workflow_runs as GitWorkflowRun[];
     const currentRun = workflowRuns.find(
       (r) => r.head_branch === latestVersion
     );
@@ -40,8 +38,12 @@ const useCommonFrontend = () => {
       if (isPublished) {
         return currentRun?.head_branch;
       }
+      minuteCount++;
       await sleepAsync(1000 * 60);
-    } while (isPublished || minuteCount < TIME_OUT);
+    } while (!isPublished && minuteCount < TIME_OUT);
+    console.log(
+      `Waiting to shared-components is published in npm package (TIMEOUT)... `
+    );
     return undefined;
   };
 
@@ -80,6 +82,13 @@ const useCommonFrontend = () => {
     execSync(gitPushCmd, { encoding: "utf-8" });
   };
 
+  const getForDeployPullRequestAsync = async () => {
+    return await githubService.getForDeployPullRequestAsync({
+      repository: setting.commonFrontend.repository,
+      branch: setting.branchForDeploy.commonFrontend,
+    });
+  };
+
   const buildImageCommonFrontendAsync = async () => {
     const sharedVersion = await waitUntilPublishedSharedComponentAsync();
     if (!sharedVersion) {
@@ -90,10 +99,18 @@ const useCommonFrontend = () => {
     }
 
     await upVersionSharedComponentInCommonFrontend(sharedVersion);
+    const forDeployPr = await githubService.getForDeployPullRequestAsync({
+      branch: setting.branchForDeploy.commonFrontend,
+      repository: setting.commonFrontend.repository,
+    });
+    await githubService.convertToDraftAndReadyForReviewAsync({
+      pullRequestNodeId: forDeployPr.node_id,
+    });
   };
 
   return {
     buildImageCommonFrontendAsync,
+    getForDeployPullRequestAsync,
   };
 };
 

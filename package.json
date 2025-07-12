@@ -5,7 +5,10 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/index.js",
-    "dev": "yarn build && yarn start"
+    "dev": "yarn build && yarn start",
+    "up:share": "node ./dist/features/up-version-shared-component-and-build-common-frontend.js",
+    "up:common-frontend": "node ./dist/features/build-common-frontend.js",
+    "up:inform-frontend": "node ./dist/features/build-inform-frontend.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +19,8 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "axios": "^1.10.0"
+    "axios": "^1.10.0",
+    "graphql": "^16.11.0",
+    "graphql-request": "^7.2.0"
   }
 }

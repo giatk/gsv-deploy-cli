@@ -6,7 +6,9 @@
     "githubAccessToken": "<your access_token>",
     "githubOwner": "giatk",
     "commonFrontend": {
-        "sourceCode": "../demo-build-gsv"
+        "sourceCode": "../demo-build-gsv",
+        "repository": "demo-build-gsv",
+        "workflowBuildDockerImage": "build-docker.yml"
     },
     "sharedComponents": {
         "sourceCode": "../own-npm-lib",

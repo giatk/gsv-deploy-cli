@@ -7,6 +7,8 @@ export interface AppSettings {
   githubOwner: string;
   commonFrontend: {
     sourceCode: string;
+    repository: string;
+    workflowBuildDockerImage: string;
   };
   sharedComponents: {
     sourceCode: string;

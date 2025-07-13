@@ -1,6 +1,7 @@
 import path from "path";
 import { AppSettings } from "./models";
 import * as fs from "fs";
+import { execSync } from "child_process";
 
 export const loadSettings = () => {
   const prodPath = path.resolve(__dirname, "../settings.production.json");
@@ -68,4 +69,12 @@ export const printElapsedTime = ({
       clearInterval(interval);
     },
   };
+};
+
+export const processExecSync = (
+  cmd: string,
+  option?: { skipConsoleLog?: boolean }
+) => {
+  !option?.skipConsoleLog && console.log(cmd);
+  return execSync(cmd.replaceAll(/\s+/g, " ").trim(), { encoding: "utf-8" });
 };

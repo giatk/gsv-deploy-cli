@@ -4,9 +4,9 @@ import {
   loadSettings,
   printElapsedTime,
   sleepAsync,
+  processExecSync,
 } from "./utilities";
 import { useSharedComponents } from "./use-shared-components";
-import { execSync } from "child_process";
 import { GitHubService } from "./github.service";
 import path from "path";
 import * as fs from "fs";
@@ -106,43 +106,31 @@ const useCommonFrontend = () => {
   const upVersionSharedComponentInCommonFrontend = async (
     sharedComponentVersion: string
   ) => {
-    const currentBranch = execSync(
-      `cd "${setting.commonFrontend.sourceCode}" && git rev-parse --abbrev-ref HEAD`,
-      { encoding: "utf-8" }
+    const currentBranch = processExecSync(
+      `cd "${setting.commonFrontend.sourceCode}" && git rev-parse --abbrev-ref HEAD`
     );
     if (currentBranch.trim() !== setting.branchForDeploy.commonFrontend) {
       console.log(
         `Current branch of 'common-frontend' is \'${currentBranch.trim()}\'`
       );
-      execSync(
+      processExecSync(
         `cd "${setting.commonFrontend.sourceCode}" && git checkout "${setting.branchForDeploy.commonFrontend}"`
       );
     }
 
-    execSync(`cd "${setting.commonFrontend.sourceCode}" && git pull`);
+    processExecSync(`cd "${setting.commonFrontend.sourceCode}" && git pull`);
 
     const sharedComponentsName = getSharedComponentsName();
 
-    const installSharedComponentsCmd = `cd "${setting.commonFrontend.sourceCode}" && npm i ${sharedComponentsName}@${sharedComponentVersion}`;
-    console.log(installSharedComponentsCmd);
-    execSync(installSharedComponentsCmd);
+    processExecSync(
+      `cd "${setting.commonFrontend.sourceCode}" && npm i ${sharedComponentsName}@${sharedComponentVersion}`
+    );
 
-    const gitPushCmd = `cd "${setting.commonFrontend.sourceCode}"
+    processExecSync(`cd "${setting.commonFrontend.sourceCode}"
               && git add package.json
               && git add package-lock.json
               && git commit -m "[Up version shared-components] ${sharedComponentVersion}"
-              && git push`
-      .replaceAll(/\s+/g, " ")
-      .trim();
-    console.log(gitPushCmd);
-    execSync(gitPushCmd, { encoding: "utf-8" });
-  };
-
-  const getForDeployPullRequestAsync = async () => {
-    return await githubService.getForDeployPullRequestAsync({
-      repository: setting.commonFrontend.repository,
-      branch: setting.branchForDeploy.commonFrontend,
-    });
+              && git push`);
   };
 
   const buildImageCommonFrontendAsync = async () => {

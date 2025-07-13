@@ -1,5 +1,4 @@
-import { loadSettings } from "./utilities";
-import { execSync } from "child_process";
+import { loadSettings, processExecSync } from "./utilities";
 import * as fs from "fs";
 import path from "path";
 
@@ -7,11 +6,9 @@ export const useSharedComponents = () => {
   const setting = loadSettings();
 
   const getLatestTagVersion = () => {
-    const tagsOutput = execSync(
+    const tagsOutput = processExecSync(
       `cd "${setting.sharedComponents.sourceCode}" && git pull && git tag`,
-      {
-        encoding: "utf-8",
-      }
+      { skipConsoleLog: true }
     );
 
     const tagPattern = /\d+\.\d+\.\d+\-next\.\d+/i;
@@ -40,20 +37,19 @@ export const useSharedComponents = () => {
   };
 
   const upVersionNpmPackageJson = () => {
-    const currentBranch = execSync(
-      `cd "${setting.sharedComponents.sourceCode}" && git rev-parse --abbrev-ref HEAD`,
-      { encoding: "utf-8" }
+    const currentBranch = processExecSync(
+      `cd "${setting.sharedComponents.sourceCode}" && git rev-parse --abbrev-ref HEAD`
     );
     if (currentBranch.trim() !== setting.branchForDeploy.sharedComponents) {
       console.log(
         `Current branch of 'shared-components' is \'${currentBranch.trim()}\'`
       );
-      execSync(
+      processExecSync(
         `cd "${setting.sharedComponents.sourceCode}" && git checkout "${setting.branchForDeploy.sharedComponents}"`
       );
     }
 
-    execSync(`cd "${setting.sharedComponents.sourceCode}" && git pull`);
+    processExecSync(`cd "${setting.sharedComponents.sourceCode}" && git pull`);
 
     const packageJsonPath = path.join(
       setting.sharedComponents.sourceCode,
@@ -72,13 +68,12 @@ export const useSharedComponents = () => {
 
     console.log(`Upgrading shared-components to version \'${nextVersion}\'`);
 
-    execSync(
+    processExecSync(
       `cd "${setting.sharedComponents.sourceCode}"
             && git add package.json
             && git commit -m "[Up version] ${nextVersion}"
             && git push && git tag ${nextVersion}
-            && git push origin ${nextVersion}`.replaceAll("\n", " "),
-      { encoding: "utf-8" }
+            && git push origin ${nextVersion}`
     );
   };
 

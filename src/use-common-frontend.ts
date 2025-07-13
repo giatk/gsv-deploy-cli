@@ -37,7 +37,7 @@ const useCommonFrontend = () => {
         )})... `,
     });
     const latestRun = await waitUntilAsync({
-      duration: setting.pollingTime,
+      duration: setting.pollingDurationTime,
       runAsync: async () => {
         const workflowRuns = await githubService.getWorkflowRunsAsync({
           repository: setting.commonFrontend.repository,
@@ -83,7 +83,7 @@ const useCommonFrontend = () => {
         )})...`,
     });
     const publishedVersion = await waitUntilAsync({
-      duration: setting.pollingTime,
+      duration: setting.pollingDurationTime,
       timeout: 30 * 60 * 1000,
       runAsync: async () => {
         const currentRun = await getSharedComponentLatestWorkflowRunAsync();

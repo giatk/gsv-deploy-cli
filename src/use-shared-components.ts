@@ -72,7 +72,8 @@ export const useSharedComponents = () => {
       `cd "${setting.sharedComponents.sourceCode}"
             && git add package.json
             && git commit -m "[Up version] ${nextVersion}"
-            && git push && git tag ${nextVersion}
+            && git push
+            && git tag ${nextVersion}
             && git push origin ${nextVersion}`
     );
   };

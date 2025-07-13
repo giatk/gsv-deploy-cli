@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   formatElapsed,
   waitUntilAsync,
@@ -6,10 +5,8 @@ import {
   printElapsedTime,
   sleepAsync,
 } from "./utilities";
-import { useSharedComponents } from "./publish-shared-components";
+import { useSharedComponents } from "./use-shared-components";
 import { execSync } from "child_process";
-import { GitWorkflowRun } from "./models";
-import { GitPullRequest } from "./models/git-pull-request.model";
 import { GitHubService } from "./github.service";
 import path from "path";
 import * as fs from "fs";

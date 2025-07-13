@@ -1,6 +1,6 @@
-import { useCommonFrontend } from "./build-common-frontend";
+import { useCommonFrontend } from "./use-common-frontend";
 import { GitHubService } from "./github.service";
-import { useSharedComponents } from "./publish-shared-components";
+import { useSharedComponents } from "./use-shared-components";
 import {
   formatElapsed,
   waitUntilAsync,

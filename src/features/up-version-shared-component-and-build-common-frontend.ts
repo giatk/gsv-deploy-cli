@@ -5,9 +5,13 @@ import { loadSettings, sleepAsync } from "../utilities";
 
 async function main() {
   const { upVersionNpmPackageJson } = useSharedComponents();
-  const { buildImageCommonFrontendAsync } = useCommonFrontend();
+  const {
+    buildImageCommonFrontendAsync,
+    upVersionSharedComponentInCommonFrontend,
+  } = useCommonFrontend();
   upVersionNpmPackageJson();
   await sleepAsync(10 * 1000); //wait 10s to npm package build success.
+  await upVersionSharedComponentInCommonFrontend();
   await buildImageCommonFrontendAsync();
 }
 

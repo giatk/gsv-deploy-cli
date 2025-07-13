@@ -103,9 +103,7 @@ const useCommonFrontend = () => {
     return publishedVersion;
   };
 
-  const upVersionSharedComponentInCommonFrontend = async (
-    sharedComponentVersion: string
-  ) => {
+  const checkoutCommonFrontendBranchForDeployAsync = async () => {
     const currentBranch = processExecSync(
       `cd "${setting.commonFrontend.sourceCode}" && git rev-parse --abbrev-ref HEAD`
     );
@@ -119,30 +117,34 @@ const useCommonFrontend = () => {
     }
 
     processExecSync(`cd "${setting.commonFrontend.sourceCode}" && git pull`);
-
-    const sharedComponentsName = getSharedComponentsName();
-
-    processExecSync(
-      `cd "${setting.commonFrontend.sourceCode}" && npm i ${sharedComponentsName}@${sharedComponentVersion}`
-    );
-
-    processExecSync(`cd "${setting.commonFrontend.sourceCode}"
-              && git add package.json
-              && git add package-lock.json
-              && git commit -m "[Up version shared-components] ${sharedComponentVersion}"
-              && git push`);
   };
 
-  const buildImageCommonFrontendAsync = async () => {
-    const sharedVersion = await waitUntilPublishedSharedComponentAsync();
-    if (!sharedVersion) {
+  const upVersionSharedComponentInCommonFrontend = async () => {
+    const sharedComponentLatestVersion =
+      await waitUntilPublishedSharedComponentAsync();
+    if (!sharedComponentLatestVersion) {
       console.error(
         "Something went wrong! Not found shared-components new version."
       );
       return;
     }
 
-    await upVersionSharedComponentInCommonFrontend(sharedVersion);
+    await checkoutCommonFrontendBranchForDeployAsync();
+
+    const sharedComponentsName = getSharedComponentsName();
+
+    processExecSync(
+      `cd "${setting.commonFrontend.sourceCode}" && npm i ${sharedComponentsName}@${sharedComponentLatestVersion}`
+    );
+
+    processExecSync(`cd "${setting.commonFrontend.sourceCode}"
+              && git add package.json
+              && git add package-lock.json
+              && git commit -m "[Up version shared-components] ${sharedComponentLatestVersion}"
+              && git push`);
+  };
+
+  const buildImageCommonFrontendAsync = async () => {
     const forDeployPr = await githubService.getForDeployPullRequestAsync({
       branch: setting.branchForDeploy.commonFrontend,
       repository: setting.commonFrontend.repository,
@@ -166,6 +168,7 @@ const useCommonFrontend = () => {
   };
 
   return {
+    upVersionSharedComponentInCommonFrontend,
     buildImageCommonFrontendAsync,
   };
 };

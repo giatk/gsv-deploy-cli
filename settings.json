@@ -14,5 +14,6 @@
         "sourceCode": "../own-npm-lib",
         "workflowPublishNpm": "npm-publish.yml",
         "repository": "own-npm-lib"
-    }
+    },
+    "pollingTime": 10000
 }

@@ -15,4 +15,5 @@ export interface AppSettings {
     workflowPublishNpm: string;
     repository: string;
   };
+  pollingTime: number;
 }

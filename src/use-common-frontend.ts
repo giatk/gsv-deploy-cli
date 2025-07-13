@@ -179,8 +179,6 @@ const useCommonFrontend = () => {
 
   return {
     buildImageCommonFrontendAsync,
-    getForDeployPullRequestAsync,
-    getLatestForDeployWorkflowRunNumberAsync,
   };
 };
 
